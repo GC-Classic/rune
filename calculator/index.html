@@ -168,12 +168,10 @@
 
 <script>
     onhashchange(location.hash.substring(1) || 'en');
+    customElements.whenDefined('rune-calculator').then(() => Q('main').hidden = false);
 </script>
 <script>
-    DB.show('characters').then(chars => {
-        chars.length ? chars.forEach(([i, char]) => Calculator.add({id: i, ...char})) : Calculator.add();
-        customElements.whenDefined('rune-calculator').then(() => Q('main').hidden = false);
-    });
+    DB.show('characters');
     
     Q('aside').replaceChildren(
         ...Object.entries({Common:'普通', Rare:'稀有', Epic:'史詩', Legend:'傳說'}).map(([g, title]) => E('i', g[0], {title})),
