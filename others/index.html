@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<title>Rune calculator</title>
+<meta charset="utf-8">
+<meta name=viewport content='width=device-width,initial-scale=1,maximum-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monda:wght@700&family=Shippori+Antique&family=Sofia+Sans+Condensed:wght@600;800&display=swap" rel="stylesheet">
+<script src="/common.js"></script>
+<script src="calculator.js"></script>
+<link rel="stylesheet" href="/common.css">
+<style>
+    label::before {content:attr(data-min);right:100%;position:absolute;}
+    label::after {content:attr(data-max);left:100%;position:absolute;}
+    data::before {content:attr(title);}
+    data::after {content:attr(value);}
+    data {display:inline-block;width:5em;}
+
+    label {display:inline-block;width:7.5em;position:relative;margin:0 1em;}
+    input[type=range] {
+        appearance:none;
+        height:.5em;
+        background:gray;
+        border-radius:9em;
+        position:relative;
+        font-size:1em;
+        --l:0;
+    }
+    ::-webkit-slider-thumb {
+        appearance:none;
+        position:absolute; left:calc(var(--l)*100%); bottom:100%; transform:translateX(-50%);
+        transition:left .5s;
+        border-style:solid;
+        border-width:1em .5em 0 .5em; border-color:white transparent transparent transparent;
+        font-size:.5em;
+    }
+</style>
+
+<ul></ul>
+<script>
+    Q('ul').append(...Object.entries({
+        A: [280,560], D: [160,330], V: [160,330],
+        HP: [9,20], MP: [4,8], GP:[.19,.5],
+        SA: [470,1000], SD:[290,600],
+        CAC: [1.8,3.6], CAD: [16,32],
+        TR: [.1,3], BAD: [.1,5], EXP: [.1,1],
+        HSC: [.1,4], HS:[100,3000]
+    }).map(([prop, [min, max]]) => E('li', [
+        E('data', {title: prop}), 
+        E('label', [E('input', {type: 'range', min, max, disabled: true})])
+    ])));
+
+    const randomize = input => {
+        let before = parseFloat(input.getAttribute('value'));
+        let after = Math.random() * (parseFloat(input.max) - parseFloat(input.min)) + parseFloat(input.min);
+        input.setAttribute('value', input.value = after);
+        after < before && setTimeout(() => input.setAttribute('value', input.value = before), 300);
+    }
+    
+    Q('input[type=range]', input => {
+        ['min','max'].forEach(a => input.parentElement.setAttribute(`data-${a}`, input[a]));
+        input.random = () => randomize(input);
+
+        let { get, set } = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+        Object.defineProperty(input, 'value', {
+            set(value) {
+                input.style.setProperty('--l', (value - parseFloat(input.min)) / (parseFloat(input.max) - parseFloat(input.min)));
+                input.parentElement.previousElementSibling.value = value.toFixed(2);
+                return set.apply(this, arguments);
+            },
+            get() {
+                return parseFloat(get.apply(this));
+            },
+        });
+    });
+</script>
