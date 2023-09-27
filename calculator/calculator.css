@@ -147,16 +147,16 @@ classic-rune {
 }
 
 label:has(+data[title=A]),  data[title=A]   {order:1;}
-label:has(+data[title=HP]), data[title=HP]  {order:2;}
-label:has(+data[title=D]),  data[title=D]   {order:3;}
-label:has(+data[title=MP]), data[title=MP]  {order:4;}
-label:has(+data[title=V]),  data[title=V]   {order:5;}
-label:has(+data[title=GP]), data[title=GP]  {order:6;}
+label:has(+data[title=HP]), data[title=HP]  {order:10;}
+label:has(+data[title=D]),  data[title=D]   {order:2;}
+label:has(+data[title=MP]), data[title=MP]  {order:9;}
+label:has(+data[title=V]),  data[title=V]   {order:4;}
+label:has(+data[title=GP]), data[title=GP]  {order:14;}
 label:has(+data[title=SA]), data[title=SA]  {order:7;}
-label:has(+data[title=HS]), data[title=HS]  {order:8;}
-label:has(+data[title=SD]), data[title=SD]  {order:9;}
-label:has(+data[title=CAR]),data[title=CAR] {order:10;}
-label:has(+data[title=CAC]),data[title=CAC] {order:11;}
-label:has(+data[title=TR]), data[title=TR]  {order:12;}
-label:has(+data[title=CAD]),data[title=CAD] {order:13;}
-label:has(+data[title=CD]), data[title=CD]  {order:14;}
+label:has(+data[title=HS]), data[title=HS]  {order:11;}
+label:has(+data[title=SD]), data[title=SD]  {order:8;}
+label:has(+data[title=CAR]),data[title=CAR] {order:6;}
+label:has(+data[title=CAC]),data[title=CAC] {order:3;}
+label:has(+data[title=TR]), data[title=TR]  {order:13;}
+label:has(+data[title=CAD]),data[title=CAD] {order:5;}
+label:has(+data[title=CD]), data[title=CD]  {order:12;}
