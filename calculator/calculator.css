@@ -14,7 +14,10 @@
 :host(:not(.delete)) #delete,:host(.delete) #delete~button {
     display:none;
 }
-#delete~button {
+#delete>* {
+    pointer-events:none;
+}
+#scroll {
     font-size:2em;
     filter:drop-shadow(0 0 0.5px white);
 }

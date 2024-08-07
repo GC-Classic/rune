@@ -7,7 +7,7 @@ class Calculator extends HTMLElement {
         <link rel="stylesheet" href="calculator.css">
         <form id="pref">
             <button type="button" class="action" id="delete"><span>Delete</span><span>刪除</span></button>
-            <button type="button">🔝</button>
+            <button type="button" id="scroll">🔝</button>
             <input name="name">
             <input type="color" value=#0000ff>
         </form>
@@ -54,47 +54,50 @@ class Calculator extends HTMLElement {
         }
         this.shadowRoot.Q('#rune').append(E('figure'), E('figure'));
     }
-    trigger = (el, ev) => (typeof el == 'string' ? this.shadowRoot.Q(el) : el).dispatchEvent(new Event(ev));
+    trigger = (el, ev) => (typeof el == 'string' ? this.shadowRoot.Q(el) : el).dispatchEvent(new Event(ev, {bubbles: true}));
     connectedCallback() {
         this.TA = this.shadowRoot.Q('#TA');
         this.saved ? this.fill() : this.sample();
-        this.events();
+        setTimeout(() => this.events());
     }
     events() {
         Delta.observe(this.shadowRoot);
-        this.shadowRoot.Q(':is(.from,.to) input', input => input.onchange = () => {
-            let select = input.closest('div').Q('select');
-            let slot = input.closest('fieldset').Q(`.rune-slot:${input.matches(':first-child') ? 'first' : 'last'}-child`);
-            if (!input.value) {
-                select?.options[select.selectedIndex]?.remove();
-                select && (select.value = '');
-                return slot.replaceChildren();
+        Object.assign(this.shadowRoot.Q('#pref'), {
+            onchange: ev => {
+                ev.target.previousElementSibling.style.background = ev.target.value;
+                Menu.arrange();
+                this.save();
+            },
+            onclick: ({target: {id}}) => id == 'delete' ? this.delete() : id == 'scroll' ? scrollTo(0,0) : null,
+        });
+        this.shadowRoot.Q('#char').onchange = () => (this.calculate(), this.save());
+        this.shadowRoot.Q('#rune').onchange = ({target: input}) => {
+            if (input.type == 'text') {
+                let select = input.closest('div').Q('select');
+                let slot = input.closest('fieldset').Q(`.rune-slot:${input.matches(':first-child') ? 'first' : 'last'}-child`);
+                if (!input.value) {
+                    select?.options[select.selectedIndex]?.remove();
+                    select && (select.value = '');
+                    return slot.replaceChildren();
+                }
+                let rune = Calculator.parse(input, input.id.split('-')[1]);
+                if (!rune) return;
+                let string = rune.stringify().replace(/^\[.\]/, '');
+                input.value = string.replace(/[(){},]/g, ' $& ');
+                this.shadowRoot.Q(`option[value="${string}"]`) || select?.append(E('option', string, {value: string, selected: true}));
+                slot.replaceChildren(new RuneElement(rune));
             }
-            let rune = Calculator.parse(input, input.id.split('-')[1]);
-            if (!rune) return;
-            let string = rune.stringify().replace(/^\[.\]/, '');
-            input.value = string.replace(/[(){},]/g, ' $& ');
-            this.shadowRoot.Q(`option[value="${string}"]`) || select?.append(E('option', string, {value: string, selected: true}));
-            slot.replaceChildren(new RuneElement(rune));
-        });
-        this.shadowRoot.Q('select', select => select.onchange = () => {
-            let input = select.closest('div').Q('input');
-            input.value = select.value;
-            this.trigger(input, 'change');
-        });
-        this.shadowRoot.Q('input[type=color]').oninput = ev => {
-            ev.target.previousElementSibling.style.background = ev.target.value;
-            Menu.arrange();
-        }
-        this.shadowRoot.Q('#delete').onclick = () => this.delete();
-        this.shadowRoot.Q('#delete+button').onclick = () => scrollTo(0,0);
-        this.shadowRoot.Q('form input:not([id|=shape])', input => input.addEventListener('change', () => this.calculate()));
-        
+            else if (input.type == 'select-one') {
+                let text = input.closest('div').Q('input');
+                text.value = input.value;
+                this.trigger(text, 'change');
+            }
+            input.type != 'radio' && (this.calculate(), this.save());
+        };
+        this.shadowRoot.Q('#pref').oninput = this.shadowRoot.Q('#rune').oninput = this.shadowRoot.Q('#char').oninput = () => this.edited = true;
         this.shadowRoot.Q('#shape-0').checked = true;
         this.shadowRoot.Q(':is(.from,.to) input', input => this.trigger(input, 'change'));
-        this.trigger('input[type=color]', 'input');
-
-        this.shadowRoot.Q('input:not([type=radio]):not([type=checkbox])', input => input.addEventListener('change', () => this.save()));
+        this.trigger('input[type=color]', 'change');
     }
     fill() {
         this.id = this.saved.id;
@@ -105,6 +108,7 @@ class Calculator extends HTMLElement {
         this.shadowRoot.Q('select', (select, i) => {
             select.append(...[this.saved.subject[i] || []].flat().map(r => E('option', r, {value: r})));
             select.closest('div').Q('input').value = select.options[0]?.value ?? '';
+            select.closest('fieldset').Q('.change input').checked = this.saved.checked?.[i] ?? true;
         });
     }
     sample() {
@@ -142,12 +146,14 @@ class Calculator extends HTMLElement {
         );
     }
     save() {
+        if (!this.edited && !this.saved) return;
         let data = {
             name: this.shadowRoot.Q('input[name=name]').value,
             color: this.shadowRoot.Q('input[type=color]').value,
             character: this.character(),
             equipped: this.shadowRoot.Q('.rune-slot:first-child').map(slot => slot.firstElementChild?.rune.stringify().replace(/^\[.\]/, '')),
             subject: this.shadowRoot.Q('select').map(select => [...select.options].map(op => op.value)),
+            checked: this.shadowRoot.Q('#rune .change input').map(input => input.checked)
         };
         DB.put('characters', this.id ? [parseInt(this.id), data] : data).then(ev => this.id = ev.target.result).catch(er => Q('header p').textContent = er);
     }
