@@ -11,38 +11,46 @@ class Calculator extends HTMLElement {
             <input name="name">
             <input type="color" value=#0000ff>
         </form>
-        <form id="char">
-            <h3><span>Total Attack</span><span>綜合戰鬥力</span></h3>
-            <data id="TA" class="delta"></data>
-        </form>
-        <form id="rune">
-            <input type="radio" name="shape" id="shape-0">
-            <label for="shape-0"><data class="delta"></data></label>
-            <fieldset>
-                <div class="from">
-                    <input placeholder="Equipped rune" name="shape-0" id="from-0">
-                    <em></em>
-                </div>
-                <div class="change">
-                    <label for="from-0" class="rune-slot"></label>
-                    <input type="checkbox" id="switch-0" checked>
-                    <label for="switch-0">⟶</label>
-                    <label for="to-0" class="rune-slot"></label>
-                </div>
-                <div class="to">
-                    <em></em>
-                    <input placeholder="Subject rune" name="shape-0" id="to-0">
-                    <select></select>
-                </div>
-            </fieldset>
-        </form>`;
-        this.shadowRoot.Q('#char').append(...Stats.order.flatMap(prop => [
-            E('label', [
-                E('prop-icon', {prop}), 
-                E('input', {type: 'number', placeholder: prop, step: Stats.decimals.includes(prop) ? .01 : 1})
-            ]), 
-            E('data', {classList: 'boost', title: prop})
-        ]));
+        <char-form></char-form>
+        <ul>
+            <li><output></output>
+            <li class="normal"><prop-icon prop="HS"></prop-icon><output></output>
+            <li><prop-icon prop="CAD"></prop-icon><output></output>
+            <li class="normal"><prop-icon prop="CAD"></prop-icon><prop-icon prop="HS"></prop-icon><output></output>
+            <li><prop-icon prop="BAD"></prop-icon><output></output>
+            <li class="normal"><prop-icon prop="BAD"></prop-icon><prop-icon prop="HS"></prop-icon><output></output>
+            <li><prop-icon prop="BAD"></prop-icon><prop-icon prop="CAD"></prop-icon><output></output>
+            <li class="normal"><prop-icon prop="BAD"></prop-icon><prop-icon prop="CAD"></prop-icon><prop-icon prop="HS"></prop-icon><output></output>
+            <li><span>Average damage</span><span>平均傷害</span><output></output>
+        </ul>
+        <details>
+            <summary>Buffs & settings</summary>
+            <buff-form></buff-form>
+        </details>
+        <details>
+            <summary>Runes</summary>
+            <form id="rune">
+                <input type="radio" name="shape" id="shape-0">
+                <label for="shape-0"><data class="delta"></data></label>
+                <fieldset>
+                    <div class="from">
+                        <input placeholder="Equipped rune" name="shape-0" id="from-0">
+                        <em></em>
+                    </div>
+                    <div class="change">
+                        <label for="from-0" class="rune-slot"></label>
+                        <input type="checkbox" id="switch-0" checked>
+                        <label for="switch-0">⟶</label>
+                        <label for="to-0" class="rune-slot"></label>
+                    </div>
+                    <div class="to">
+                        <em></em>
+                        <input placeholder="Subject rune" name="shape-0" id="to-0">
+                        <select></select>
+                    </div>
+                </fieldset>
+            </form>
+        </details>`;
         let template = this.shadowRoot.Q('#rune').cloneNode(true);
         for (let s = 3; s <= 6; s++) {
             let temp = template.cloneNode(true);
@@ -70,7 +78,6 @@ class Calculator extends HTMLElement {
             },
             onclick: ({target: {id}}) => id == 'delete' ? this.delete() : id == 'scroll' ? scrollTo(0,0) : null,
         });
-        this.shadowRoot.Q('#char').onchange = () => (this.calculate(), this.save());
         this.shadowRoot.Q('#rune').onchange = ({target: input}) => {
             if (input.type == 'text') {
                 let select = input.closest('div').Q('select');
@@ -94,7 +101,7 @@ class Calculator extends HTMLElement {
             }
             input.type != 'radio' && (this.calculate(), this.save());
         };
-        this.shadowRoot.Q('#pref').oninput = this.shadowRoot.Q('#rune').oninput = this.shadowRoot.Q('#char').oninput = () => this.edited = true;
+        this.shadowRoot.Q('#pref').oninput = this.shadowRoot.Q('#rune').oninput = () => this.edited = true;
         this.shadowRoot.Q('#shape-0').checked = true;
         this.shadowRoot.Q(':is(.from,.to) input', input => this.trigger(input, 'change'));
         this.trigger('input[type=color]', 'change');
@@ -103,7 +110,7 @@ class Calculator extends HTMLElement {
         this.id = this.saved.id;
         this.shadowRoot.Q('input[name=name]').value = this.saved.name;
         this.shadowRoot.Q('input[type=color]').value = this.saved.color;
-        Object.entries(this.saved.character).forEach(([p, v]) => this.shadowRoot.Q(`input[placeholder=${p}]`).value = v);
+        Object.entries(this.saved.character).forEach(([p, v]) => this.shadowRoot.Q(`input[placeholder=${p}]`) && (this.shadowRoot.Q(`input[placeholder=${p}]`).value = v));
         this.shadowRoot.Q('.from input').forEach((input, i) => input.value = this.saved.equipped[i] || '');
         this.shadowRoot.Q('select', (select, i) => {
             select.append(...[this.saved.subject[i] || []].flat().map(r => E('option', r, {value: r})));
@@ -113,11 +120,10 @@ class Calculator extends HTMLElement {
     }
     sample() {
         this.shadowRoot.Q('input[name=name]').value = `Character ${[...this.parentElement.children].indexOf(this) + 1}`;
-        Object.entries(Stats.sample).forEach(([p, v]) => this.shadowRoot.Q(`input[placeholder=${p}]`).value = v);
         this.shadowRoot.Q(':is(.from,.to) input', input => input.value = new Rune([input.name.split('-')[1]]).stringify().replace(/^\[.\]/, ''));
     }
 
-    character = () => this.shadowRoot.Q('input[type=number]').reduce((obj, input) => ({...obj, [input.placeholder]: parseFloat(input.value || 0)}), {});
+    character = () => this.shadowRoot.Q('char-form').before;
     equipped = Object.assign(() => this._equipped ??= this.shadowRoot.Q('.rune-slot:first-child'), {
         runes: () => this.equipped().map(slot => slot.firstElementChild?.rune?.stats),
         sets: () => Runes.sets.find(this.equipped().map(slot => slot.firstElementChild))
@@ -129,8 +135,9 @@ class Calculator extends HTMLElement {
     calculate() {
         this._equipped = this._subject = null;
         let equipped = this.equipped.runes(), subject = this.subject.runes();
-        this.shadowRoot.Q('figure:first-of-type').replaceChildren(...this.equipped.sets().map(s => E('img', {src: `/rune/set/${s}.webp`})));
-        this.shadowRoot.Q('figure:last-of-type').replaceChildren(...this.subject.sets().map(s => E('img', {src: `/rune/set/${s}.webp`})));
+        let [beforeSetImgs, afterSetImgs] = ['equipped', 'subject'].map(w => this[w].sets().map(s => E('img', {src: `/rune/set/${s}.webp`})));
+        this.shadowRoot.Q('figure:first-of-type').replaceChildren(...beforeSetImgs);
+        this.shadowRoot.Q('figure:last-of-type').replaceChildren(...afterSetImgs);
 
         equipped.sets = this.equipped.sets().map(s => Rune.set.effect[s]);
         subject.sets = this.subject.sets().map(s => Rune.set.effect[s]);
@@ -138,12 +145,18 @@ class Calculator extends HTMLElement {
         let runeless = before.minus(...equipped, ...equipped.sets);
         let after = runeless.add(...subject, ...subject.sets);
 
-        this.TA.textContent = after.TA.toFixed(0);
-        this.TA.value = after.TA - before.TA;
-        Object.entries(after.minus(before)).forEach(([p, v]) => this.shadowRoot.Q(`data[title=${p}]`).value = v);
+        
+        this.shadowRoot.Q('char-form').setDelta(after.minus(before));
         subject.forEach((_, i) => 
             this.shadowRoot.Q(`#rune>label:nth-of-type(${i+1}) data`).value = after.TA - after.minus(subject[i]).add(equipped[i]).TA
         );
+        let damage = Damage({...before, BAP:30, TD: 0, Lv: 85, monsterLv: 85, skill: 3, buff: {HS:0,A:0}});
+        [
+            damage.basic, damage.basic + damage.HS, damage.basic * damage.critical, damage.basic * damage.critical + damage.HS, 
+            damage.basic * damage.back, damage.basic * damage.back + damage.HS, damage.basic * damage.back * damage.critical, damage.basic * damage.back * damage.critical + damage.HS,
+            damage.average 
+        ].forEach((value, i) => this.shadowRoot.Q(`li:nth-of-type(${i+1}) output`).value = value.toFixed(0));
+
     }
     save() {
         if (!this.edited && !this.saved) return;
@@ -224,3 +237,61 @@ Calculator.add = data => {
 Calculator.delete = checked => Q('rune-calculator', cal => cal.classList.toggle('delete', checked));
 Calculator.abbr = checked => Q('aside').classList.toggle('remind', checked);
 customElements.define('rune-calculator', Calculator);
+
+const Buff = {
+    rune: {
+        'fury-1':{A:5},'fury-2':{A:5},'fight-1':{A:2.5},'fight-2':{A:2.5},
+        rage:{A:10},hunt:{A:10},punish:{A:10},
+        'roar-1':{HS:10},'roar-2':{HS:10}
+    },
+    title: {
+        t1:{A:10,CAC:1.5},t2:{A:5,CAC:1.5},t3:{A:10,CAC:1.5},t4:{A:5,CAC:1.5},t5:{A:5,CAC:1.5},
+    },
+    item: {
+        i1:{A:10},i2:{A:10},i3:{A:10},i4:{A:15},i5:{A:15},
+    },
+}
+const Damage = ({A, SA, CAC, CAD, BAP, BAD, HSC, HS, TD, TR, Lv, monsterLv, skill, buff}, normal = true) => {
+    let seniority = Math.max(Lv - monsterLv - 5, 0);
+    let NTD = Math.max(TD - TR, 0);
+    CAC += buff?.CAC || 0, BAD += buff?.BAD || 0;
+    [CAC, CAD, BAD] = TD === 0 ? [Math.min(CAC, 100), CAD, BAD] : 
+        [Math.min(Math.max(0, CAC - 20), 100), Math.max(-50, CAD - 250), Math.max(-30, CAD - 50)];
+    
+    let damage = {};
+    damage.HS = Damage.HS(HS, NTD, buff, normal);
+    damage.basic = Damage.basic(A, SA, skill, NTD, seniority, buff, normal);
+    damage.critical = Damage.critical(CAD);
+    damage.back = Damage.back(BAD);
+    damage.average = Damage.average(damage.basic, CAC, damage.critical, HSC, damage.HS, BAP, damage.back);
+    return damage;
+}
+Object.assign(Damage, {
+    basic: (A, SA, skill, NTD, seniority, buff, normal) =>
+        (normal ? A*Damage.normal : (A+SA)*Damage.special) * (1 + buff.A/100) * skill * (1 + .02*seniority) * (1 - NTD/100),
+
+    HS: (HS, NTD, buff, normal) => HS * (1 + buff.HS/100) * (1 - NTD/100) * normal,
+    critical: (CAD) => Math.max(1, 1.5 + CAD/100),
+    back: (BAD) => Math.max(1, 1.3 + BAD/100),
+    average: (basic, CAC, critical, HSC, HS, BAP, BAD) => {
+        let afterCritical = CAC/100*critical*basic + (1 - CAC/100)*basic;
+        return BAP/100*afterCritical*BAD + (1 - BAP/100)*afterCritical + HSC/100*HS
+    },
+    normal: .0168, special: .005469
+});
+Object.assign(Calculator, {
+    build: (name, type, src) => 
+        Object.entries(Buff[name]).map(([id, value]) => E('label', [
+            E('input', {id, type, ...type ? {name} : {}, value: JSON.stringify(value)}), 
+            E('img', {src: src(id)})]
+        )),
+    rune: () => Calculator.build('rune', 'checkbox', id => `/rune/set/${id.split('-')[0]}.webp`),
+    item: () => Calculator.build('item', 'checkbox', id => `/damage/buffs/${id}.png`),
+    title: () => Calculator.build('title', 'radio', id => `/damage/buffs/${id}.webp`),
+
+    add: data => {
+        typeof data == 'boolean' && (data = null);
+        data instanceof Node && (data = data.shadowRoot.Q('input'));
+        Q('main').appendChild(new Calculator(data))[data ? null : 'scrollIntoView']?.();
+    }
+});

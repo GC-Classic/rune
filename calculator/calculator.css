@@ -1,3 +1,6 @@
+:host {
+    max-width:18em;
+}
 :is(#char,#rune) input,select {
     font-size:.7em;
     padding-left:.2em;
@@ -33,39 +36,41 @@ input[name=name] {
     margin:0 .5em;
 }
 
-#char {
-    display:grid; grid-template:auto / 5em 3em 5em 3em;
+ul {
+    display:grid; gap:0 .2em; grid-template: auto / repeat(4,1fr);
     font-size:1.1em;
-    padding-right:.3em;
+    margin-top:0em;
+
+    prop-icon {
+        font-size:1.3em;
+    }
 }
-prop-icon {
-    vertical-align:middle;
-    margin-right:.1em;
-}
-#char input {
-    width:5em;
-}
-input:is([placeholder=CD],[placeholder=GP],[placeholder=CAR],[placeholder=HS],[placeholder=TR]) {
-    color: darkgray;
-}
-#char label+data {
-    border-bottom:.1rem solid var(--fg);
-    font-size:.7em;
+ul li {
     align-self:end;
+    text-align:right; font-size:.8em;
 }
-h3 {
-    grid-area:7/3/8/5; align-self:flex-end;
-    font-size:.8em; text-align:right; line-height:.9;
+ul li>* {vertical-align:middle;}
+ul span {line-height:1.5;}
+ul output {
+    display:block;
+    color:var(--bg); background:lightgoldenrodyellow;
+    text-align:center; font-size:1.25em;
 }
-#TA {
-    grid-area:8/3/9/5; align-self:flex-end;
-    font-size:1.15em; text-align:right; line-height:.7;
+ul li:last-child {
+    grid-area:3/1/4/5;
 }
 
+details {
+    margin:.5em auto;
+    font-size:.9rem;
+    summary {
+        text-align:left;
+    }
+}
 #rune {
     display:grid; grid-template:3em auto / repeat(5, 3em); 
     justify-content:center;
-    margin-top:1em;
+    margin-top:.5em;
     font-size:1.1em;
 }
 #rune label:not(.rune-slot) {
@@ -75,7 +80,7 @@ h3 {
 }
 #rune>input:checked+label::before {
     content:'▼'; color:yellow; font-size:.5em;
-    position:absolute; top:-.75em; left:50%; transform:translateX(-50%);
+    position:absolute; top:-.5em; left:50%; transform:translateX(-50%);
 }
 #rune label data {
     font-size:.8em;
@@ -148,18 +153,6 @@ input[id|=switch]:not(:checked)~* {
 classic-rune {
     pointer-events:none;
 }
-
-label:has(+data[title=A]),  data[title=A]   {order:1;}
-label:has(+data[title=HP]), data[title=HP]  {order:10;}
-label:has(+data[title=D]),  data[title=D]   {order:2;}
-label:has(+data[title=MP]), data[title=MP]  {order:9;}
-label:has(+data[title=V]),  data[title=V]   {order:4;}
-label:has(+data[title=GP]), data[title=GP]  {order:14;}
-label:has(+data[title=SA]), data[title=SA]  {order:7;}
-label:has(+data[title=HS]), data[title=HS]  {order:11;}
-label:has(+data[title=SD]), data[title=SD]  {order:8;}
-label:has(+data[title=CAR]),data[title=CAR] {order:6;}
-label:has(+data[title=CAC]),data[title=CAC] {order:3;}
-label:has(+data[title=TR]), data[title=TR]  {order:13;}
-label:has(+data[title=CAD]),data[title=CAD] {order:5;}
-label:has(+data[title=CD]), data[title=CD]  {order:12;}
+label:has([prop=BAD]) {
+    grid-column-start:1;
+}

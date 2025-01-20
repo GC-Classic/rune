@@ -1,0 +1,115 @@
+:host(*) {
+    display:grid; justify-content:center;
+
+    >* {align-self:end;}
+
+    input {
+        &.formula:invalid {
+            border:red; background: pink;
+        }
+    }
+    input[type=number],input:not([type]) {
+        font-size:.8rem;
+    }
+    input.formula {
+        background:rgb(145, 187, 198);
+    }
+}
+:host(char-form) {
+    font-size:1.1rem;
+    margin-bottom:.5em; 
+
+    prop-icon {
+        vertical-align:middle;
+        margin-right:.1em;
+    }
+    .attacking,h3 {
+        color:darkorange;
+    }
+    .damaging {
+        background:lightgoldenrodyellow;
+    }
+    label input[type=number] {
+        width:calc(100% - 2em);
+
+        &:is([placeholder=CD],[placeholder=GP],[placeholder=CAR]) {
+            color:darkgray;
+        }
+    }
+    label+data {
+        border-bottom:.1rem solid var(--fg);
+        font-size:.7em;
+        align-self:end;
+    }
+    h3 {
+        grid-area:8/3/10/5;
+        text-align:right;
+        margin-bottom:-.2em;
+
+        span {
+            font-size:.8em;
+            display:block;
+        }
+        span~* {
+            font-size:1.15em; line-height:1;
+            margin-bottom:-.2em;
+        }
+    }
+}
+:host(char-form.delta) .boost,
+:host(char-form.runes) .formula {
+    display:none;
+}
+:host(char-form.delta) {
+    grid-template:auto / repeat(4,1fr);
+}
+:host(char-form.runes) {
+    grid-template:auto / 5fr 3fr 5fr 3fr;
+}
+
+:host(buff-form) {
+    grid-template-columns:1fr 1fr; gap: .2em .5em;
+    margin: .5em auto;
+    font-size:.8rem;
+
+    >label {
+        display:flex; justify-content:space-between; align-items:center;
+    }
+    input {
+        width:3.5em;
+        background:lightgoldenrodyellow;
+
+        &:is([name=skill],[name=TD],[name=BP],[name=MonsterLv],[name=Lv]) {
+            background:rgb(169, 230, 204)
+        }
+    }
+    section {
+        grid-column: 1/-1; justify-self:center;
+        max-width:23em;
+        margin-top:.5em; padding:0;
+    }
+    img {
+        &:not([src^='/rune']) {
+            height:4.5em; 
+            margin:0 -.1em -.2em -.1em;
+        }
+        &[src^='/rune'] {
+            width:2em; height:2em;
+            margin:0 .2em;
+        }
+    }
+    input:not(:checked)+label,label:has(input:is([type=checkbox],[type=radio]):not(:checked)) {
+        filter:saturate(0) brightness(.6);
+    }
+    div {
+        display:flex; justify-content:space-between; align-items:center;
+        margin-top:.5em;
+
+        data {
+            width:4em;
+            border-bottom:.1rem solid var(--fg);
+            align-self:end;
+        }
+        i {line-height:1;}
+    }
+}
