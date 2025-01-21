@@ -63,8 +63,17 @@ ul li:last-child {
 details {
     margin:.5em auto;
     font-size:.9rem;
+
     summary {
         text-align:left;
+
+        >* {
+            display:inline-block;
+        }
+        data {
+            width: 3em;
+            border-bottom: .1rem solid var(--fg);
+        }
     }
 }
 #rune {
@@ -152,7 +161,4 @@ input[id|=switch]:not(:checked)~* {
 }
 classic-rune {
     pointer-events:none;
-}
-label:has([prop=BAD]) {
-    grid-column-start:1;
 }

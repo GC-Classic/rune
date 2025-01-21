@@ -1,7 +1,7 @@
 class CharForm extends Form {
     constructor() {
         super();
-        this.shadowRoot.append(...CharForm.all.flatMap((prop, i) => [
+        this.shadowRoot.append(E('form', [...CharForm.all.flatMap((prop, i) => [
                 E('label', [
                     E('prop-icon', {prop}), 
                     E('input', {
@@ -17,7 +17,7 @@ class CharForm extends Form {
                 E('span', 'Total Attack'), E('span', '綜合戰鬥力'),
                 E('output', {name: 'TA'}), E('data', {classList: 'delta', title: 'TA'})
             ])
-        );
+        ]));
     }
     connectedCallback () {
         super.connectedCallback();
@@ -56,14 +56,16 @@ class CharForm extends Form {
             (this.delta = this.formulae.reduce((obj, input) => ({...obj, [input.name]: parseFloat(input.value || 0)}), {}));
         this.calculate();
     }
-    setDelta (stats) {
+    receiveDelta (stats) {
         this.delta = stats;
         Object.entries(stats).forEach(([p, v]) => this.shadowRoot.Q(`data[title=${p}]`).value = v);
         this.calculate();
     }
-    calculate () {
+    calculate (runeDeltas) {
         this.before = new Stats(this.before);
-        this.after = new Stats(this.before).add(this.delta);
+        if (runeDeltas)
+            return runeDeltas.map(delta => this.before.add(delta).TA - this.before.TA);
+        this.after = this.before.add(this.delta);
         this.shadowRoot.Q('output').value = Math.round(this.after.TA);
         setTimeout(() => this.shadowRoot.Q('output+data').value = Math.round(this.after.TA - this.before.TA));
     }
