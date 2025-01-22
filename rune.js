@@ -142,8 +142,14 @@ Rune.set = Object.assign([
     },
     effect: {
         doom: { CAD: 18.8 },
+        grow: { EXP: 5 },
         resist: { TR: 2.5 },
-        sage: { TR: 3 }
+        sage: { TR: 3 },
+    },
+    buff: {
+        fury: { A: 5 },
+        fight: { A: 2.5 },
+        roar: { HS: 10 }
     }
 });
 Rune.primary = {
