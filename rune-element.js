@@ -54,7 +54,7 @@ class RuneElement extends HTMLElement {
             E('b'), E('data', {classList: 'delta'}), E('b', {classList: 'level'})
         );
         this.shadowRoot.Q('.bottom').append(...this.rune.acquired.map(prop => E('prop-icon', {prop})));
-        Delta.observe(this.shadowRoot);
+        Data.observe(this.shadowRoot);
     }
     updateHTML = () => Object.values(this.update).forEach(f => f());
     update = {
