@@ -110,7 +110,10 @@ b::before {
     padding:.1em 0;
     box-sizing:content-box;
 }
-prop-icon {position:relative;}
+prop-icon {
+    position:relative;
+    font-size:1em;
+}
 prop-icon:nth-child(2) {margin-left:.5em;}
 prop-icon:nth-child(2)::before {
     content:'';
