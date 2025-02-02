@@ -28,9 +28,10 @@ const Form = () => {
 }
 Object.assign(Form, {
     build: () => {
-        Q('#filter').prepend(...E.fieldsets.radio({
-            shape: [0,3,4,5,6].map(s => ({[s]: E('img', {src: `/rune/shape/${s}.webp`})}))
-        }));
+        Q('#filter').prepend(E('fieldset', [
+            E('legend', 'shape'),
+            ...E.radios([0,3,4,5,6].map(s => ({id: s, children: E('img', {src: `/rune/shape/${s}.webp`})}) ), {name: 'shape'})
+        ]));
         Q('#filter details').append(...E.fieldsets.radio({
             tier: [1,2,3,4,5],
             grade: Rune.grade.map((g, i) => ({[i]: g})),
