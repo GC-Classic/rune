@@ -149,6 +149,7 @@ Rune.set = Object.assign([
     buff: {
         fury: { A: 5 },
         fight: { A: 2.5 },
+        hunt: { A: 10 },
         roar: { HS: 10 }
     },
     zh: {   
