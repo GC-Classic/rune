@@ -150,6 +150,8 @@ Rune.set = Object.assign([
         fury: { A: 5 },
         fight: { A: 2.5 },
         hunt: { A: 10 },
+        rage: { A: 10 },
+        punish: { A: 10 },
         roar: { HS: 10 }
     },
     zh: {   
@@ -161,26 +163,26 @@ Rune.primary = {
     3: ['A','D','V','SA','SD'],
     4: ['A','D','V','MP','HP','TR'],
     5: ['A','D','V','CAC','CAD','TR'],
-    6: ['CD','CAR','TR']
+    6: ['CR','CAR','TR']
 }
 Rune.secondary = {
     CAC: 4, CAD: 4, MP: 4,
     A: 7, D: 7, V: 7, SA: 7, SD: 7, HP: 7, 
-    CD: 9, TR: 10, CAR: 10, HS: 7, GP: 10,
+    CR: 9, TR: 10, CAR: 10, HS: 7, GP: 10,
 }
 Rune.grade = ['C','R','E','L'];
 Rune.values = {
     base: {
         A: 69.15, D: 48.95, V: 37.15, TR: .552,
         SA: 61.55, CAC: .26, CAD: 2, MP: .44, HP: 1.268,
-        CD: .36, CAR: .52, SD: 41.15, HS: 25, GP: .5,
+        CR: .36, CAR: .52, SD: 41.15, HS: 25, GP: .5,
     },
     primary: {
         tier: 2.75, grade: 1.5,
         level: 0.026, level10: 0.04,
     },
     secondary: {
-        correct: { CAC: .0023, CAR: .0051, HP: .0071, MP: .01, CD: .0028 },
+        correct: { CAC: .0023, CAR: .0051, HP: .0071, MP: .01, CR: .0028 },
         multiple: 0.76, tier: 0.88,
         level: 0.15
     }
