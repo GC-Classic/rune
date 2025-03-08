@@ -13,7 +13,7 @@ const Observers = () => {
         Runes.equipped([...document.querySelectorAll('#equipped classic-rune')]);
         Runes.recalculate();
         Q('#stats figure').replaceChildren(...Runes.equipped.sets.find().map(s => E('img', {src: `/rune/set/${s}.webp`})));
-        Stats.update();
+        Stat.update();
         DB.save.equipped();
         addedNodes.length >= 1 && Runes.sort();
     }).observe(Q('#equipped'), {childList: true, subtree: true});
@@ -62,7 +62,7 @@ Object.assign(Form, {
         Q('#base input[type=number]', input => {
             input.onchange = () => {
                 Runes.recalculate().sort();
-                Stats.update();
+                Stat.update();
                 DB.put('meta', ['character', Form.base.values()]);
             };
             input.onkeydown = ev => ev.key == 'Tab' ? Q(`label[for=${input.name}]`).nextSibling?.nextSibling.click() : null;;

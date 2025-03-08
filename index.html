@@ -187,7 +187,7 @@
         Menu();
         Data.observe(Q('#stats'));
         onhashchange(location.hash.substring(1) || 'en');
-    }).then(DB.load.runes).then(DB.load.darkstones).then(Q('#equipped classic-rune') || Stats.update);
+    }).then(DB.load.runes).then(DB.load.darkstones).then(Q('#equipped classic-rune') || Stat.update);
     
     Q('#summon').onclick = Runes.summon;
     Runes.inventory = Q('#inventory');

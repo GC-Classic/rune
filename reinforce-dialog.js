@@ -93,11 +93,11 @@ class ReinforceDialog extends HTMLElement {
         this.fill(this.rune.exp);
         this.shadowRoot.append(E('dl', [
             E('dt', [E('prop-icon', {prop: this.rune.primary.prop})]),
-            E('dd', Stats.round(this.rune.primary))
+            E('dd', Stat.round(this.rune.primary))
         ]));
         this.shadowRoot.append(E('dl', this.rune.secondary.flatMap(s => [
             E('dt', [E('prop-icon', {prop: s.prop, level: s.level})]),
-            E('dd', Stats.round(s))
+            E('dd', Stat.round(s))
         ])));
     }
     stones = {

@@ -199,3 +199,4 @@ Rune.score = (shape, pri, sec) => {
 Rune.exp = t => [...Array(11)].map((_, l) => (4.29702-.04274*l+.01116*l*l+.84155*l*l*l) * Math.pow(1.94366,t)).slice(1);
 Rune.exp.bonus = {1:.89, 2:.1, 4:.01}
 Rune.darkstones = (t, g) => Math.round((.028+.065*t+.031*t*t)*(18.717+14.743*g-3.39*g*g+1.121*g*g*g));
+export {Rune, Runes}

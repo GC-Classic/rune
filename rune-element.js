@@ -1,3 +1,6 @@
+import {Data, Stat} from '/calculation.js'
+import {Menu} from '/UIX.js'
+import {Rune, Runes} from './rune.js'
 class RuneElement extends HTMLElement {
     constructor(rune, attr) {
         super();
@@ -80,7 +83,7 @@ class RuneElement extends HTMLElement {
         }
     }
     calculate = {
-        delta: () => this.delta = Stats.baseNrune(Runes.equipped.replace(this)) - Stats.baseNrune()
+        delta: () => this.delta = Stat.baseNrune(Runes.equipped.replace(this)) - Stat.baseNrune()
     }
     visibility = filter => this.parentElement.hidden = !new O(filter).every(([attr, value]) => 
         value.some(v => ['pri', 'sec'].includes(attr) ? this.has[attr](v) : this.rune[attr] == v)
@@ -121,7 +124,7 @@ class RuneElement extends HTMLElement {
             let bonus = this.rune.feed(stones);
             Runes.darkstone.add(stones * -1);
             this.updateHTML();
-            this.equipped ? Stats.update() && Runes.recalculate() : this.delta > before && Runes.sort();
+            this.equipped ? Stat.update() && Runes.recalculate() : this.delta > before && Runes.sort();
             bonus > 1 && this.toggle({bonus}, true);
             this.saved && this.action.save(true);
         },
@@ -146,3 +149,4 @@ class RuneElement extends HTMLElement {
     static observedAttributes = ['dismantle'];
 }
 customElements.define("classic-rune", RuneElement);
+export {RuneElement}
