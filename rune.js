@@ -55,7 +55,7 @@ class Rune {
         this.required = Rune.exp(this.tier);
         this.secondary.reinforce = () => {
             let pool = this.secondary.filter(s => s.level < 2).map(s => s.prop);
-            pool = Object.fromEntries(Object.entries(Rune.secondary).filter(([p]) => pool.includes(p)));
+            pool = new O([...new O(Rune.secondary)].filter(([p]) => pool.includes(p)));
             let drawn = Rune.draw(pool);
             this.secondary.find(s => s.prop == drawn).level++;
         }
@@ -106,7 +106,7 @@ Rune.draw = stuff => {
                 return output;
     }
     const sum = Object.values(stuff).reduce((sum, weight) => sum += weight, 0);
-    return Rune.draw(new Map(Object.entries(stuff).map(([output, weight]) => [output, weight / sum])));
+    return Rune.draw(new Map([...new O(stuff)].map(([output, weight]) => [output, weight / sum])));
 }
 Object.assign(Rune.draw, {
     tierNgrade: () => Rune.draw(Rune.tierNgrade),

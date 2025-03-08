@@ -30,7 +30,7 @@ Object.assign(Form, {
     build: () => {
         Q('#filter').prepend(E('fieldset', [
             E('legend', 'shape'),
-            ...E.radios([0,3,4,5,6].map(s => ({id: s, children: E('img', {src: `/rune/shape/${s}.webp`})}) ), {name: 'shape'})
+            ...E.radios([0,3,4,5,6].map(s => new A(E('img', {src: `/rune/shape/${s}.webp`}), {id: s, name: 'shape'}) ))
         ]));
         Q('#filter details').append(...E.fieldsets.radio({
             tier: [1,2,3,4,5],
@@ -44,10 +44,10 @@ Object.assign(Form, {
         Q('#base fieldset:first-of-type').append(...['A','D','V','SA','SD','CAC','CAD','HP','MP']
             .flatMap(p => E.inputNlabel(E('prop-icon', {prop: p}), { type: 'radio', name: 'base', id: p })),
         );
-        Q('#base fieldset:last-of-type').append(...Object.entries({A:15000,D:5000,V:5000,CAC:50,CAD:400,HP:30,MP:50,SA:7500,SD:500})
+        Q('#base fieldset:last-of-type').append(...[...new O({A:15000,D:5000,V:5000,CAC:50,CAD:400,HP:30,MP:50,SA:7500,SD:500})]
             .flatMap(([p, v]) => [E('input', {name: p, value: v, type: 'number'}), E('data', {classList: 'boost', title: p})])
         );
-        DB.get('meta', 'character').then(stats => stats && Object.entries(stats).forEach(([p, v]) => Q(`input[name=${p}]`).value = v));
+        DB.get('meta', 'character').then(stats => stats && new O(stats).each(([p, v]) => Q(`input[name=${p}]`).value = v));
     },
     events: () => {
         Q('#filter input', input => input.onchange = () => Q('#inventory classic-rune', rune => rune.visibility(Runes.filter(true))));

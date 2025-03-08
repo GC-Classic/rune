@@ -82,7 +82,7 @@ class RuneElement extends HTMLElement {
     calculate = {
         delta: () => this.delta = Stats.baseNrune(Runes.equipped.replace(this)) - Stats.baseNrune()
     }
-    visibility = filter => this.parentElement.hidden = !Object.entries(filter).every(([attr, value]) => 
+    visibility = filter => this.parentElement.hidden = !new O(filter).every(([attr, value]) => 
         value.some(v => ['pri', 'sec'].includes(attr) ? this.has[attr](v) : this.rune[attr] == v)
     )
     has = {
@@ -134,7 +134,7 @@ class RuneElement extends HTMLElement {
     }
     toggle = (obj, fade = false) => {
         clearTimeout(this.timer);
-        let [attr, value] = Object.entries(obj)[0];
+        let [attr, value] = [...new O(obj)][0];
         if (this.hasAttribute(attr))
             return this.removeAttribute(attr);
         this.setAttribute(attr, value);
