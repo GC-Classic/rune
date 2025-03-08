@@ -149,4 +149,4 @@ class RuneElement extends HTMLElement {
     static observedAttributes = ['dismantle'];
 }
 customElements.define("classic-rune", RuneElement);
-export {RuneElement}
+export default RuneElement
