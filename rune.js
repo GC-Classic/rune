@@ -1,5 +1,5 @@
+import RuneElement from "./rune-element.js";
 const Runes = {
-    count: parseInt(Cookie.count) || 0,
     sets: {
         find: runes => {
             let count = runes.filter(rune => rune?.rune.set).reduce((count, rune) => ({...count, [rune.rune.set]: (count[rune.rune.set] ??= 0) + 1}), {});

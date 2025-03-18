@@ -1,4 +1,5 @@
 
+import {Rune, Runes} from './rune.js'
 const Observers = () => {
     new MutationObserver(([{addedNodes}]) => {
         addedNodes.forEach(li => li.firstChild?.visibility(Runes.filter()));
@@ -23,7 +24,7 @@ const Observers = () => {
     ).observe(Runes.darkstone, {attributes: true});
 }
 const Form = () => {
-    Form.build();
+    //Form.build();
     Form.events();
 }
 Object.assign(Form, {
@@ -52,13 +53,12 @@ Object.assign(Form, {
     events: () => {
         Q('#filter input', input => input.onchange = () => Q('#inventory classic-rune', rune => rune.visibility(Runes.filter(true))));
         Q('#filter-reset').onclick = ev => ev.preventDefault() ?? Q('legend label', label => label.click());
-        Q('#filter-text').onclick = ev => ev.preventDefault() ?? Q('#filter').classList.toggle('text');
 
         Q('#base input[type=radio]', input => input.onchange = () => {
             Q('.editing', input => input.classList.remove('editing'));
             Q(`input[name=${input.id}]`).classList.add('editing');
         });
-        Q('#A').click();
+        //Q('#A').click();
         Q('#base input[type=number]', input => {
             input.onchange = () => {
                 Runes.recalculate().sort();
@@ -113,3 +113,4 @@ Object.assign(DB, {
             }),
     }
 })
+export {Form, Observers}

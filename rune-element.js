@@ -73,7 +73,7 @@ class RuneElement extends HTMLElement {
             this.title = this.rune.stringify();
         },
         delta: () => {
-            if (DEMO) return;
+            return;
             this.calculate.delta();
             this.sQ('.delta').value = this.delta;
         },
