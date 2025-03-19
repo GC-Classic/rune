@@ -1,4 +1,5 @@
-import RuneElement from "./rune-element.js";
+import RuneElement from './rune-element.js'
+import {Stat} from '../calculation.js'
 const Runes = {
     sets: {
         find: runes => {
@@ -68,8 +69,9 @@ class Rune {
         this.secondary?.forEach(s => s.value = (Rune.values.base[s.prop] + (secondary.correct[s.prop] ?? 0))
             * (1 + secondary.multiple + this.tier * secondary.tier)
             * (1 + s.level * secondary.level));
-        this.stats = Object.fromEntries([
-            [this.primary.prop, this.primary.value], ...this.secondary?.map(s => [s.prop, s.value]) ?? []
+        this.stat = new Stat([
+            [this.primary.prop, this.primary.value], 
+            ...this.secondary?.map(s => [s.prop, s.value]) ?? []
         ]);
     }
     get acquired() {return [this.primary.prop, ...this.secondary?.map(s => s.prop) ?? []];}

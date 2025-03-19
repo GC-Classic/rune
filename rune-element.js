@@ -10,7 +10,7 @@ class RuneElement extends HTMLElement {
         this.createRune(rune || this.title);
         this.createHTML();
         this.updateHTML();
-        this.onclick = () => this.action[Q('input[name=action]:checked').id]();
+        //this.onclick = () => this.action[Q('input[name=action]:checked').id]();
     }
     set number(no) {this.setAttribute('number', no);}
     get number() {return this.getAttribute('number');}
@@ -42,21 +42,21 @@ class RuneElement extends HTMLElement {
             E('link', {rel: 'stylesheet', href: '/common.css'}),
             E('link', {rel: 'stylesheet', href: '/rune/rune.css'}),
             E('b', {classList: 'tier', title: `T${this.rune.tier}`}), 
-            E('figure', {classList: Rune.grade[this.rune.grade]}),
+            E('figure', {classList: Rune.grade[this.rune.grade]}, [
+                E('img', {src: `/rune/shape/${this.rune.shape}.webp`}),
+                this.rune.set ? E('img', {src: `/rune/set/${this.rune.set}.webp`}) : '',
+                E('div', {classList: 'top'}, [
+                    E('b'), E('data', {classList: 'delta'}), E('b', {classList: 'level'})
+                ]), 
+                E('div', {classList: 'bottom'}, [
+                    ...this.rune.acquired.map(prop => E('prop-icon', {prop}))
+                ]),
+            ]),
             E('dialog', [E('button', 'Close 關閉', {onclick: ev => ev.target.parentElement.close()})], {
                 onclick: ev => ev.stopPropagation(),
                 onclose: ev => ev.target.Q('rune-reinforce').remove()
             })
         );
-        this.sQ('figure').append(
-            E('img', {src: `/rune/shape/${this.rune.shape}.webp`}),
-            this.rune.set ? E('img', {src: `/rune/set/${this.rune.set}.webp`}) : '',
-            E('div', {classList: 'top'}), E('div', {classList: 'bottom'}),
-        );
-        this.sQ('.top').append(
-            E('b'), E('data', {classList: 'delta'}), E('b', {classList: 'level'})
-        );
-        this.sQ('.bottom').append(...this.rune.acquired.map(prop => E('prop-icon', {prop})));
         Data.observe(this.shadowRoot);
     }
     updateHTML = () => Object.values(this.update).forEach(f => f());

@@ -1,5 +1,5 @@
 :host {
-    display:inline-block !important; width:5em; height:5em;
+    display:inline-block; width:5em; height:5em;
     border-radius:9em; outline:.25rem solid var(--outline);
     position:relative;
     --border:var(--fg);
