@@ -41,18 +41,18 @@ class RuneElement extends HTMLElement {
         this.shadowRoot.append(
             E('link', {rel: 'stylesheet', href: '/common.css'}),
             E('link', {rel: 'stylesheet', href: '/rune/rune.css'}),
-            E('b', {classList: 'tier', title: `T${this.rune.tier}`}), 
-            E('figure', {classList: Rune.grade[this.rune.grade]}, [
+            E('b.tier', {title: `T${this.rune.tier}`}), 
+            E(`figure${Rune.grade[this.rune.grade]}`, [
                 E('img', {src: `/rune/shape/${this.rune.shape}.webp`}),
                 this.rune.set ? E('img', {src: `/rune/set/${this.rune.set}.webp`}) : '',
-                E('div', {classList: 'top'}, [
-                    E('b'), E('data', {classList: 'delta'}), E('b', {classList: 'level'})
+                E('div.top', [
+                    E('b'), E('data.delta'), E('b.level')
                 ]), 
-                E('div', {classList: 'bottom'}, [
+                E('div.bottom', [
                     ...this.rune.acquired.map(prop => E('prop-icon', {prop}))
                 ]),
             ]),
-            E('dialog', [E('button', 'Close 關閉', {onclick: ev => ev.target.parentElement.close()})], {
+            E('dialog', E('button', 'Close 關閉', {onclick: ev => ev.target.parentElement.close()}), {
                 onclick: ev => ev.stopPropagation(),
                 onclose: ev => ev.target.Q('rune-reinforce').remove()
             })
@@ -103,7 +103,7 @@ class RuneElement extends HTMLElement {
         },
         equip: (equip = true) => {
             if (!equip || this.equipped)
-                return Runes.inventory.append(E('li', [this]));
+                return Runes.inventory.append(E('li', this));
             Q(`#s-${this.rune.shape} classic-rune`)?.action.equip(false);
             Q(`#s-${this.rune.shape}`).append(this);
             this.action.save(true);

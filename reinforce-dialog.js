@@ -71,12 +71,12 @@ class ReinforceDialog extends HTMLElement {
         prop-icon {vertical-align:sub;}
         </style>`;
         this.shadowRoot.append(rune.cloneNode(true),
-            E('div', [
-                E('data', {id: 'exp'}),
-                E('data', {id: 'ds', value: Runes.darkstone.value, title: 0}),
+            E('div#feed', [
+                E('data#exp'),
+                E('data#ds', {value: Runes.darkstone.value, title: 0}),
                 ...[-1,1,-10,10,-100,100,-1000,1000].map(ds => E('button', `${ds}`.replace(/^(?!-)/, '+').replace('-', '−'), {value: ds})),
-                E('button', 'Reinforce', {id: 'go'})
-            ], {id: 'feed'}),
+                E('button#go', 'Reinforce')
+            ]),
             E('p', [E('span', 'WIP. Please use simple reinforcement mode.'), E('span', '製作中。請使用簡易強化模式。')]),
         );
         this.shadowRoot.Q('#go').onclick = () => this.stones.execute(rune);
@@ -92,11 +92,11 @@ class ReinforceDialog extends HTMLElement {
         this.shadowRoot.Q('#exp').replaceChildren(...this.bars);
         this.fill(this.rune.exp);
         this.shadowRoot.append(E('dl', [
-            E('dt', [E('prop-icon', {prop: this.rune.primary.prop})]),
+            E('dt>prop-icon', {prop: this.rune.primary.prop}),
             E('dd', Stat.round(this.rune.primary))
         ]));
         this.shadowRoot.append(E('dl', this.rune.secondary.flatMap(s => [
-            E('dt', [E('prop-icon', {prop: s.prop, level: s.level})]),
+            E('dt>prop-icon', {prop: s.prop, level: s.level}),
             E('dd', Stat.round(s))
         ])));
     }

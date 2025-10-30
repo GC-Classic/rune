@@ -31,7 +31,10 @@ Object.assign(Form, {
     build: () => {
         Q('#filter').prepend(E('fieldset', [
             E('legend', 'shape'),
-            ...E.radios([0,3,4,5,6].map(s => new A(E('img', {src: `/rune/shape/${s}.webp`}), {id: s, name: 'shape'}) ))
+            ...E.radios([0,3,4,5,6].map(s => ({
+                label: E('img', {src: `/rune/shape/${s}.webp`}),
+                id: s, name: 'shape'
+            }) ))
         ]));
         Q('#filter details').append(...E.fieldsets.radio({
             tier: [1,2,3,4,5],
@@ -42,9 +45,9 @@ Object.assign(Form, {
             set: Rune.set.flat().map(s => ({[s]: E('img', {src: `/rune/set/${s}.webp`, alt: s})})),
         }));
 
-        Q('#base fieldset:first-of-type').append(...['A','D','V','SA','SD','CAC','CAD','HP','MP']
-            .flatMap(p => E.inputNlabel(E('prop-icon', {prop: p}), { type: 'radio', name: 'base', id: p })),
-        );
+        Q('#base fieldset:first-of-type').append(...E.radios(['A','D','V','SA','SD','CAC','CAD','HP','MP'].map(p => 
+            ({label: E('prop-icon', {prop: p}), name: 'base', id: p })),
+        ));
         Q('#base fieldset:last-of-type').append(...[...new O({A:15000,D:5000,V:5000,CAC:50,CAD:400,HP:30,MP:50,SA:7500,SD:500})]
             .flatMap(([p, v]) => [E('input', {name: p, value: v, type: 'number'}), E('data', {classList: 'boost', title: p})])
         );

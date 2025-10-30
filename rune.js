@@ -18,7 +18,7 @@ const Runes = {
             return Error('clear-inventory');
         Runes.inventory.style.minHeight = Runes.inventory.clientHeight + 'px';
         let drawn = new RuneElement(null, {number: `${++Runes.count}`.padStart(5, '0')});
-        Runes.inventory.append(E('li', [drawn]));
+        Runes.inventory.append(E('li', drawn));
         Cookie.set('count', Runes.count);
         Runes.inventory.style.minHeight = 'auto';
     },
