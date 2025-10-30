@@ -41,7 +41,7 @@ class RuneElement extends HTMLElement {
         this.shadowRoot.append(
             E('link', {rel: 'stylesheet', href: '/common.css'}),
             E('link', {rel: 'stylesheet', href: '/rune/rune.css'}),
-            E(`b.${tier}`, {title: `T${this.rune.tier}`}), 
+            E('b.tier', {title: `T${this.rune.tier}`}), 
             E(`figure.${Rune.grade[this.rune.grade]}`, [
                 E('img', {src: `/rune/shape/${this.rune.shape}.webp`}),
                 this.rune.set ? E('img', {src: `/rune/set/${this.rune.set}.webp`}) : '',
