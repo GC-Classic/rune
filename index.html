@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<title>Rune simulator</title>
+<meta charset="utf-8">
+<meta name=viewport content='width=device-width,initial-scale=1,maximum-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monda:wght@700&family=Shippori+Antique&family=Sofia+Sans+Condensed:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://aeoq.github.io/AEOQ.js"></script>
+<script src="reinforce-dialog.js"></script>
+<link rel="stylesheet" href="/common.css">
+<link rel="stylesheet" href="simulator.css">
+
+<header>
+    <details>
+        <summary><span>Reminders</span><span>提示</span></summary>
+        <ul>
+            <li>
+                <span>This simulator is made in accordance with the <a href="https://koggames.com/grandchase-classic-en/item-probability/">officially announced probabilities</a>.</span>
+                <span>此模擬器依照<a href="https://koggames.com/grandchase-classic-en/item-probability/">官方公布機率</a>製作。</span>
+            </li>
+            <li>
+                <span>The probabilities of each shape are not announced, therefore are assumed to be equal (20%).</span>
+                <span>每個形狀的機率並沒有公布，因此假設相等 (20%)。</span>
+            </li>
+            <li>
+                <span>Values are calculated so are subject to rounding errors.</span>
+                <span>數值是計算出來，故會有誤差。</span>
+            </li>
+            <li>
+                <span>All unsaved runes will be deleted after page refresh.</span>
+                <span>未有被保存的符文都會在頁面刷新時自動被刪除。</span>
+            </li>
+            <li class="border">
+                <span><i></i>Satisfactory <i></i>Good <i></i>Excellent properties to Total Attack.</span>
+                <span><i></i>不錯 <i></i>好 <i></i>相當好屬性（對綜合戰鬥力）。</span>
+            </li>
+            <li class="outline">
+                <span><i></i>Reinforced <i></i>Saved runes.</span>
+                <span><i></i>強化過 <i></i>已保存的符文。</span>
+            </li>
+        </ul>
+    </details>
+    <div>
+        <nav>
+            <a href="../calculator/"><span>Rune calculator</span><span>符文計算器</span></a>
+            <a href="../simulator" class="located"><span>Rune simulator</span><span>符文模擬器</span></a>
+            <a href="#en" class="lang">English</a>
+            <a href="#zh" class="lang"><span class="always">中文</span></a>
+        </nav>
+        <button id="summon" title="draw"><img src="arsc.webp"></button>
+        <menu>
+            <li>
+                <ol>
+                    <li><label><input type="radio" name="reinforce-mode" value="standard"><span>Stanadrd reinforce</span><span>標準強化</span></label></li>
+                    <li><label><input type="radio" name="reinforce-mode" value="simple" checked><span>Simple reinforce</span><span>簡易強化</span></label></li>
+                </ol>
+                <input type="radio" name="action" id="reinforce" checked>
+                <label for="reinforce"><span>Reinforce</span><span>強化</span></label>
+            </li>
+            <li>
+                <ol>
+                    <li><label><input type="radio" name="dismantle-mode" value="auto"><span>Auto dismantle all shown except saved</span><span>自動拆解全部顯示中，除已保存</span></label></li>
+                    <li><label><input type="radio" name="dismantle-mode" value="manual" checked><span>Manual dismantle</span><span>手動拆解</span></label></li>
+                </ol>
+                <input type="radio" name="action" id="dismantle">
+                <label for="dismantle"><span>Dismantle</span><span>拆解</span></label>
+            </li>
+            <li>
+                <input type="radio" name="action" id="equip">
+                <label for="equip"><span>Equip</span><span>裝備</span></label>
+            </li>
+            <li>
+                <input type="radio" name="action" id="save">
+                <label for="save"><span>Save</span><span>保存</span></label>
+            </li>
+        </menu>
+    </div>
+</header>
+
+<main>
+    <section>
+        <div id="data"><data value="0" id="darkstone"></data><data value="0" id="count"></data></div>
+        <form id="filter">
+            <details>
+                <summary><span>More filters</span><span>篩選更多</span>
+                    <button id="filter-reset" class="action"><span>Reset</span><span>重設</span></button>
+                </summary>
+            </details>
+        </form>
+        <ol id="inventory"></ol>
+    </section>
+
+    <section>
+        <ol id="equipped">
+            <li id="s-0" class="rune-slot"></li>
+            <li id="s-3" class="rune-slot"></li>
+            <li id="s-4" class="rune-slot"></li>
+            <li id="s-5" class="rune-slot"></li>
+            <li id="s-6" class="rune-slot"></li>
+        </ol>
+        <div id="stats">
+            <details>
+                <summary><span>Change character stat</span><span>改變角色數値</span></summary>
+                <form id="base">
+                    <fieldset></fieldset>
+                    <fieldset></fieldset>
+                </form>
+            </details>
+            <h2>
+                <span>Total Attack</span><span>綜合戰鬥力</span><br>
+                <output></output><data class="delta"></data>
+            </h2>
+            <figure></figure>
+        </div>
+    </section>
+</main>
+
+<aside>
+    <p id="clear-inventory"><span>Clear inventory first</span><span>先清理倉庫</span></p>
+    <p id="unequip-unsave"><span>Unequip / unsave first</span><span>先卸除／解除保存</span></p>
+    <p id="inadequate-darkstones"><span>Inadequate darkstones</span><span>暗黑石不足</span></p>
+</aside>
+
+<details id="sets">
+    <summary>套裝效果</summary>
+</details>
+
+<footer>
+    <a href="/rune/calculator"><span>Rune</span><span>符文</span></a>・
+    <a href="/damage"><span>Damage</span><span>傷害</span></a>・
+    <a href="/property"><span>Property</span><span>屬性</span></a>
+    <cite>By V. Man (@beybladeburst)</cite>
+</footer>
+
+<template>
+    <ul>
+        <li id="shape"><span>Shape</span><span>形狀</span>
+        <li id="tier"><span>Tier</span><span>階級</span>
+        <li id="grade"><span>Grade</span><span>級別</span>
+        <li id="set"><span>Set</span><span>套裝</span>
+        <li id="pri"><span>Primary</span><span>主屬性</span>
+        <li id="sec"><span>Secondary</span><span>副屬性</span>
+    </ul>
+    <dl>
+        <dt class="A" id="fury">盛怒<dd>攻擊力 +5%
+        <dt class="D" id="endure">忍耐<dd>防禦力 +5%
+        <dt class="V" id="tolerance">韌性<dd>生命力 +5%
+        <dt class="R" id="will">意志<dd>每次復活後生命力 +10%・最多 20%
+        <dt class="R" id="focus">集中<dd>每次復活後 AP/MP +16＝約半格・最多 32＝約一格
+        <dt class="A" id="doom">破滅<dd><prop-icon prop="CAD"></prop-icon>+18.8%
+        <dt class="A" id="fight">鬥志<dd>所有隊員攻擊力 +2.5%・多位隊員有此套裝時最多 5%
+        <dt class="D" id="guard">守護<dd>所有隊員防禦力 +2.5%・多位隊員有此套裝時最多 5%
+        <dt class="V" id="enhance">激昂<dd>所有隊員生命力 +2.5%・多位隊員有此套裝時最多 5%
+        <dt class="V" id="shield">保護<dd>所有隊員擁有相當於自身生命力 0.2% 的護盾・多位隊員有此套裝時只套用最高者
+        <dt class="V" id="expert">熟練<dd>藥水回復 HP 效果 +25%
+        <dt class="A" id="javelin">鬥槍<dd>受攻擊時 60% 機率發動地獄之矛・每次發動後冷卻時間 5 秒
+        <dt class="T" id="resist">抵抗<dd><prop-icon prop="TR"></prop-icon>+2.5%
+        <dt class="A" id="roar">怒吼<dd>地獄之矛傷害 +10%
+        <dt class="N" id="grow">成長<dd>EXP +5%
+        <dt class="T" id="sage">賢者<dd>所有隊員<prop-icon prop="TR"></prop-icon>+3%・多位隊員有此套裝時最多 6%
+        <dt class="R" id="limit">極端<dd>復活後 7 秒內攻擊力 +15%
+        <dt class="A" id="hunt">狩獵<dd>對 HP >80% 的對手攻擊力 +10%
+        <dt class="D" id="awaken">覺醒<dd>HP &lt;10% 時啟動霸體
+        <dt class="R" id="arena">競技場<dd>復活後無敵時間 +20%
+        <dt class="A" id="affinity">和諧<dd>寵物技能回復速度 +13%
+        <dt class="V" id="recovery">恢復<dd>受攻擊時 5% 機率 HP 回復生命力 30%・每次發動後冷卻時間 30 秒
+        <dt class="R" id="resurrect">復活<dd>一次復活至瀕死狀態機會
+        <dt class="A" id="rage">憤怒<dd>HP &lt;20% 時攻擊力 +10%
+        <dt class="D" id="overcome">克服<dd>HP &lt;20% 時防禦力 +15%
+        <dt class="A" id="punish">處決<dd>對 HP &lt;30% 的對手攻擊力 +10%
+        <dt class="D" id="protect">庇護<dd>受 HP >80% 的對手攻擊時防禦力 +15%
+    </dl>(19928/1.1*1.15/(1.5+7.1075)*(1.5+7.1075-2.5)+572*1.1)*(1-.3+.2298)
+</template>
+
+<script>
+    Q('#equipped li', (li, i) => {
+        let angle = 2/5*(i+2) + 1/2;
+        i == 2 && (angle -= 1/60);
+        i == 4 && (angle += 1/60);
+        E(li).set({style: {
+            left: (.925*Math.cos(angle*Math.PI)*50 + 50) + '%',
+            top: (.925*Math.sin(angle*Math.PI)*50 + 50) + '%'
+        }});
+    });
+
+    Q('#sets').append(Q('template').content.Q('dl').cloneNode(true));
+    Q('#sets dl').replaceChildren(...Q('#sets dt').map(dt => [dt, dt.nextElementSibling])
+        .sort(([dt1], [dt2]) => dt1.classList > dt2.classList ? 1 : dt1.classList < dt2.classList ? -1 : 0).flat())
+</script>
+<script type="module">
+    import {Rune, Runes} from './rune.js'
+    import {Form, Observers} from './simulator.js'
+    import {Menu} from '../UIX.js'
+    import {Stat, Data} from '../calculation.js'
+    Q('#summon').onclick = Runes.summon;
+    Runes.inventory = Q('#inventory');
+    Runes.darkstone = Q('#darkstone');
+    Observers();
+
+    DB.open().then(() => {
+        Form();
+        Menu();
+        Data.observe(Q('#stats'));
+        onhashchange(location.hash.substring(1) || 'en');
+    }).then(DB.load.runes).then(DB.load.darkstones).then(Q('#equipped classic-rune') || Stat.update);
+    Q('#sets dt', dt => {
+        dt.prepend(E('img', {src: `/rune/set/${dt.id}.webp`}));
+        dt.title = Rune.set.pieces[dt.id];
+    });
+</script>

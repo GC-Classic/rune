@@ -1,0 +1,134 @@
+:host {
+    display:inline-block; width:5em; height:5em;
+    border-radius:9em; outline:.25rem solid var(--outline);
+    position:relative;
+    --border:var(--fg);
+}
+:host(.reinforced) {--outline:orange;}
+:host(.saved)      {--outline:hotpink;}
+:host(.equipped)::after {
+    content:'#'attr(number); font-size:.7em;
+    position:absolute; top:100%; left:0;
+    width:100%;
+}
+:host([score='3']) {--border:hsl(195,100%,50%);}
+:host([score='4']) {--border:hsl(175,100%,50%);}
+:host([score='5']) {--border:hsl(85,100%,50%);}
+:host>* {
+    border-radius:.3em;
+    overflow:hidden;
+}
+.tier {
+    position: absolute; left:0; top:0;
+    width:3em; height:3em;
+    font-size:.9em; font-weight:bold;
+}
+.tier[title=T1] {background:hsl(180,80%,40%);}
+.tier[title=T2] {background:hsl(80,80%,40%);}
+.tier[title=T3] {background:hsl(35,80%,50%);}
+.tier[title=T4] {background:hsl(10,80%,50%);}
+.tier[title=T5] {background:hsl(310,80%,50%);}
+.tier::before {
+    content:attr(title);
+    transform: translate(-.9em,0) rotate(-45deg);
+    display:inline-block ; width:3em;
+    line-height: 0.9;
+}
+figure {
+    height:100%;
+    position:relative;
+    border:.15em solid var(--border);
+    display:flex; justify-content:center; align-items:center;
+    background:linear-gradient(to bottom left,var(--tr),var(--bl));
+    --clip:33.33%; clip-path:polygon(var(--clip) 0%, 0% var(--clip), 0% 100%, 100% 100%,100% 0);
+}
+figure.C {--tr:#7d7d7d;--bl:#898989;}
+figure.R {--tr:#6185b9;--bl:#6e92c6;}
+figure.E {--tr:#c28b64;--bl:#ca9b6d;}
+figure.L {--tr:#8c5bd9;--bl:#ab6dc2;}
+figure::before {
+    font-size:2em;
+    display:flex; justify-content:center; align-items:center;
+    width:100%; height:100%;
+    position:absolute; left:0; z-index:5;
+    background:#00000099;
+}
+:host([bonus]) {
+    pointer-events:none !important;
+}
+:host([bonus]) figure::before {
+    animation:fade 1s forwards;
+    background:#ffff0099;
+    color:black;
+}
+@keyframes fade {20% {opacity:1;} to {opacity:0;}}
+:host([bonus='2']) figure::before {content:'×2';}
+:host([bonus='4']) figure::before {content:'×4';}
+:host([dismantle]) figure::before {
+    content:attr(title); font-size:1.5em;
+    background:url(/rune/simulator/darkstone.webp) center / 50% no-repeat,#00000099;
+}
+img:first-of-type {
+    width:90%;
+    transform: translateY(-.1em);
+}
+img:nth-of-type(2) {
+    position:absolute; left:50%; top:50%; transform:translate(-50%,calc(-50% - var(--adj,.1em)));
+    height:1em; width:1em;
+    object-fit:contain;
+}
+img[src$='will.webp'] {--adj:.2em;}
+div {
+    position:absolute;
+    width:100%;
+}
+.top {
+    top:0;
+    padding:.15em;
+    display:flex; justify-content:space-between;
+    font-size:.8em; line-height:1.1;
+}
+.top b {
+    z-index:1;
+}
+.top b:first-child:empty {
+    min-width:4em; transform: translate(-1.65em,0) rotate(-45deg);
+    border-bottom: calc(.15em/.8) solid var(--border);
+    margin-right:-3em;
+}
+:host(.equipped) .delta {display:none;}
+b::before {
+    margin-right:-.1em;
+    font-family:Sofia Sans Condensed;
+}
+
+.bottom {
+    bottom:0;
+    height:1em;
+    background:var(--bg); opacity:.85;
+    font-size:.85em; white-space:nowrap;
+    padding:.1em 0;
+    box-sizing:content-box;
+}
+prop-icon {
+    position:relative;
+    font-size:1em;
+}
+prop-icon:nth-child(2) {margin-left:.5em;}
+prop-icon:nth-child(2)::before {
+    content:'';
+    position:absolute; right:120%; top:50%; transform:translate(0,-50%);
+    height:80%;
+    border-left:.05em solid;
+}
+dialog {
+    width:100%; height:100%;
+    background:var(--bg);
+    border:none;
+}
+dialog::backdrop {
+    background:#00000099;
+}
+dialog classic-rune {
+    pointer-events:none;
+}
